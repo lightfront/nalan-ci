@@ -199,6 +199,77 @@ a:hover { text-decoration: underline; }
   flex: 1;
 }
 
+/* ===== Poem Card — 讲解角标 ===== */
+.poem-card { position: relative; }
+.commentary-badge {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  font-size: 0.7rem;
+  line-height: 1;
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+  background: linear-gradient(135deg, var(--accent) 0%, #355689 100%);
+  color: #f0f5fb;
+  letter-spacing: 0.1em;
+  box-shadow: 0 2px 6px rgba(74,111,165,0.25);
+  pointer-events: none;
+}
+.poem-card.has-commentary:hover {
+  border-color: var(--accent-light);
+}
+
+/* ===== Modal — 讲解区块 ===== */
+.commentary {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(154,169,182,0.3);
+}
+.commentary-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 0.85rem;
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.commentary-title::before {
+  content: '';
+  width: 3px;
+  height: 1rem;
+  background: var(--accent);
+  border-radius: 2px;
+}
+.notes-list {
+  display: grid;
+  gap: 0.6rem;
+}
+.note-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.6rem;
+  align-items: baseline;
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+.note-item dt {
+  color: var(--accent);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.note-item dt::before { content: '〔'; color: var(--silver); }
+.note-item dt::after { content: '〕'; color: var(--silver); }
+.note-item dd { color: var(--ink); opacity: 0.85; }
+.commentary-text {
+  font-size: 0.95rem;
+  line-height: 1.95;
+  color: var(--ink);
+  opacity: 0.9;
+  text-indent: 2em;
+}
+
 /* ===== Empty State ===== */
 .empty-state {
   display: none;
@@ -305,6 +376,7 @@ a:hover { text-decoration: underline; }
   .filter-group select { flex: 1; min-width: 0; }
   .modal { padding: 1.5rem; }
   .modal-body-title { font-size: 1.25rem; }
+  .note-item { grid-template-columns: 1fr; gap: 0.15rem; }
 }
 
 @media (max-width: 480px) {

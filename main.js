@@ -13,6 +13,7 @@
   const searchInput = document.getElementById('searchInput');
   const rhythmicSel = document.getElementById('rhythmicFilter');
   const countSpan = document.getElementById('poemCount');
+  const commentaryCountSpan = document.getElementById('commentaryCount');
   const modalOverlay = document.getElementById('modalOverlay');
   const modalBody = document.getElementById('modalBody');
   const modalClose = document.getElementById('modalClose');
@@ -31,6 +32,7 @@
       }
       populateFilters();
       applyFilters();
+      commentaryCountSpan.textContent = poems.filter(p => (p.notes && p.notes.length) || p.background).length;
       bindEvents();
     } catch (err) {
       console.error('Failed to load poems:', err);
@@ -78,13 +80,15 @@
 
     const html = filtered.map(p => {
       const excerpt = p.content.slice(0, 2).join('　');
+      const hasCommentary = !!(p.notes && p.notes.length) || !!p.background;
       return `
-        <div class="poem-card" data-id="${p.id}">
+        <div class="poem-card${hasCommentary ? ' has-commentary' : ''}" data-id="${p.id}">
           <div class="poem-card-header">
             <span class="poem-card-title">${escapeHtml(p.name ? p.name : p.title)}</span>
             <span class="poem-card-rhythmic">${escapeHtml(p.rhythmic)}</span>
           </div>
           <div class="poem-card-excerpt">${escapeHtml(excerpt)}</div>
+          ${hasCommentary ? '<span class="commentary-badge" title="含字词注释与创作背景">讲解</span>' : ''}
         </div>
       `;
     }).join('');
@@ -97,6 +101,27 @@
     const poem = poems.find(p => p.id === id);
     if (!poem) return;
 
+    const notesHtml = (poem.notes && poem.notes.length)
+      ? `<section class="commentary">
+          <h3 class="commentary-title">字词注释</h3>
+          <dl class="notes-list">
+            ${poem.notes.map(n => `
+              <div class="note-item">
+                <dt>${escapeHtml(n.term)}</dt>
+                <dd>${escapeHtml(n.gloss)}</dd>
+              </div>
+            `).join('')}
+          </dl>
+        </section>`
+      : '';
+
+    const bgHtml = poem.background
+      ? `<section class="commentary">
+          <h3 class="commentary-title">创作背景</h3>
+          <p class="commentary-text">${escapeHtml(poem.background)}</p>
+        </section>`
+      : '';
+
     modalBody.innerHTML = `
       <div class="modal-body-title">${escapeHtml(poem.name ? poem.name : poem.title)}</div>
       <div class="modal-body-rhythmic">【${escapeHtml(poem.rhythmic)}】</div>
@@ -104,6 +129,8 @@
       <div class="modal-body-content">
         ${poem.content.map(line => `<p>${escapeHtml(line)}</p>`).join('')}
       </div>
+      ${notesHtml}
+      ${bgHtml}
     `;
     modalOverlay.classList.add('visible');
     document.body.style.overflow = 'hidden';
